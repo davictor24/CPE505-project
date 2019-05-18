@@ -1,0 +1,151 @@
+% This program simulates the BER performance of uncoded 8-PSK modulation over either AWGN or flat
+% Rayleigh fading channel with perfect channel interleaving and CSI.
+clear all;
+close all;
+clc;
+
+% Range of SNR to be tested, (snr is the SNR per info bit (Eb/N0) expressed
+% in dB)
+snr_dB=2:12;
+
+% Number of information bits per frame
+length_frame=3000;
+% Number of frames
+number_frames=1000;
+
+% Total number of information bits
+number_bits=???*???;
+
+fprintf(' BER performance of uncoded 8PSK\n');
+fprintf(' Number of bits per frame = %d\n',length_frame);
+fprintf(' Number of frames = %d\n',number_frames);
+fprintf(' Number of info bits = %d\n',number_bits);
+
+% Constellation and Gray mapping
+[signal,bit]=constellation();
+
+% Initial result vector
+BER=zeros(1,length(snr_dB));
+
+for i=1:length(snr_dB)
+    snr=snr_dB(i);
+    fprintf('\n');
+    fprintf('=============== SNR (in dB) = %d\n',snr_dB(i));
+    fprintf('\n');
+
+    for frame=1: ???
+        % Random vector of information bits
+        msg = round(rand(1,???));
+
+        % Mapping and transmission through the AWGN or Rayleigh fading channel
+        [r1,r2,h1,h2] = transmission(length_frame,signal,bit,snr,msg);
+
+        % Decision block
+        demod = demodulation(length_frame,signal,bit,r1,r2,h1,h2);
+
+        % Error count
+        number_errors(frame),ratio] = biterr(???,???);
+    end
+
+    % Computation of the total number of errors and BER
+    sum_errors = sum(number_errors);
+    BER(i) = ???/ ???;
+    fprintf('Total number of errors = %d\n',sum_errors);
+    fprintf('BER = %12.8f\n',BER(i));
+end
+
+figure(1);
+semilogy(snr_dB,BER,'r-');
+axis([2 16 10^-4 1]);
+legend('8-PSK over AWGN (hard-decision)');
+xlabel('EbN0 - dB');
+ylabel ('BER');
+grid on;
+
+function [signal,bit]=constellation()
+
+% Definition of the constellation and mapping
+
+signal(1)=1;
+bit(1,1)=1;
+bit(2,1)=1;
+bit(3,1)=1;
+
+signal(2)=0.7071+1i*0.7071;
+bit(1,2)=0;
+bit(2,2)=1;
+bit(3,2)=1;
+
+signal(3)=1i;
+bit(1,3)=0;
+bit(2,3)=1;
+bit(3,3)=0;
+
+signal(4)=-0.7071+1i*0.7071;
+bit(1,4)=0;
+bit(2,4)=0;
+bit(3,4)=0;
+
+signal(5)=-1;
+bit(1,5)=0;
+bit(2,5)=0;
+bit(3,5)=1;
+
+signal(6)=-0.7071-1i*0.7071;
+bit(1,6)=1;
+bit(2,6)=0;
+bit(3,6)=1;
+
+signal(7)=-1i;
+bit(1,7)=1;
+bit(2,7)=0;
+bit(3,7)=0;
+
+signal(8)=0.7071-1i*0.7071;
+bit(1,8)=1;
+bit(2,8)=1;
+bit(3,8)=0;
+
+function [r1,r2,h1,h2]=transmission(length_frame,signal,bit,snr,msg)
+
+sd=sqrt(???);
+r1=zeros(1,length_frame/3);
+r2=zeros(1,length_frame/3);
+h1=zeros(1,length_frame/3);
+h2=zeros(1,length_frame/3);
+
+% Serial-to-parallel conversion (1:3)
+for ii=1:length_frame/3
+    a=msg(3*(ii-1)+1);
+    b=msg(3*(ii-1)+2);
+    c=msg(3*(ii-1)+3);
+ 
+    % Selection of the transmitted signal (mapping)
+    for jj=1:8
+        e=bit(1,jj);
+        f=bit(2,jj);
+        g=bit(3,jj);
+        if ((a==e)&&(b==f)&&(c==g))
+            transmitted=???;
+        end
+    end
+
+    % Generation of the complex AWGN samples
+    noise=sd*randn(1)+1i*sd*randn(1);
+    % Generation of the fading samples h1 and h2
+    % (1) For AWGN channels
+ h1(ii)=1;
+ h2(ii)=1;
+% (2) For Rayleigh fading channels
+% noise1=sqrt(0.5)*randn(1);
+% noise2=sqrt(0.5)*randn(1);
+% h1(ii)=sqrt(noise1^2 + noise2^2);
+% noise1=sqrt(0.5)*randn(1);
+% noise2=sqrt(0.5)*randn(1);
+% h2(ii)=sqrt(noise1^2 + noise2^2);
+
+% Expression of the received signal as a function of the transmitted signal
+ r1(ii)=h1(ii)*real(???) + real(???);
+ r2(ii)=h2(ii)*imag(??? ) + imag(???);
+
+end
