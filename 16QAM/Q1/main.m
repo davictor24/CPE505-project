@@ -1,9 +1,12 @@
-% This program simulates the BER performance of uncoded 8-PSK modulation over AWGN
+% This program simulates the BER performance of 16-QAM modulation over AWGN
 close all;
 clc;
 
 % Range of SNR to be tested, (snr is the SNR per info bit (Eb/N0) expressed in dB)
 snr_dB=2:12;
+
+% number of soft decision bits
+nsdec = 10; 
 
 % Number of information bits per frame
 length_frame=3000;
@@ -34,15 +37,24 @@ for i=1:length(snr_dB)
     for frame=1:number_frames
         % Random vector of information bits
         msg = round(rand(1,length_frame));
+        
+        % Definition of the convolutional code
+        t = poly2trellis(3, [7 5]);
+        
+        % Encoding of the information bits and puncturing
+        coded = convenc(msg, t, [1 1 0]);
 
         % Mapping and transmission through the AWGN or Rayleigh fading channel
-        [r1,r2,h1,h2] = transmission(length_frame,signal,bit,snr,msg);
+        [r1,r2,h1,h2] = transmission(length_frame,signal,bit,snr,coded);
 
-        % Decision block
-        demod = demodulation(length_frame,signal,bit,r1,r2,h1,h2);
+        % Demapping
+        demod = demodulation(length_frame,signal,bit,snr,nsdec,r1,r2,h1,h2);
+        
+        % Viterbi decoding
+        decoded = vitdec(demod, t, 100, 'trunc', 'soft', nsdec); 
 
         % Error count
-        [number_errors(frame),ratio] = biterr(msg,demod);
+        [number_errors(frame),ratio] = biterr(msg,decoded);
     end
 
     % Computation of the total number of errors and BER
@@ -55,7 +67,7 @@ end
 figure(1);
 semilogy(snr_dB,BER,'r-');
 axis([2 16 10^-5 1]);
-legend('Uncoded 8-PSK over AWGN (hard-decision)');
+legend('16-QAM over AWGN (soft-decision)');
 xlabel('EbN0 - dB');
-ylabel('BER');
+ylabel ('BER');
 grid on;

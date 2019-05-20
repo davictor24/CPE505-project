@@ -8,6 +8,7 @@ function demod=demodulation(length_frame,signal,bit,r1,r2,h1,h2)
     for ii=1:length_frame/3
         a=r1(ii);
         b=r2(ii);
+        distance=zeros(1, 8);
         for jj=1:8
             c=h1(ii)*real(signal(jj));
             d=h2(ii)*imag(signal(jj));
