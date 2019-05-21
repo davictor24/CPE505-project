@@ -1,6 +1,4 @@
 % This program simulates the BER performance of 16-QAM modulation over AWGN
-close all;
-clc;
 
 % Range of SNR to be tested, (snr is the SNR per info bit (Eb/N0) expressed in dB)
 snr_dB=2:12;
@@ -16,7 +14,7 @@ number_frames=1000;
 % Total number of information bits
 number_bits=length_frame*number_frames;
 
-fprintf(' BER performance of uncoded 8PSK\n');
+fprintf(' BER performance of coded 16QAM over AWGN\n');
 fprintf(' Number of bits per frame = %d\n',length_frame);
 fprintf(' Number of frames = %d\n',number_frames);
 fprintf(' Number of info bits = %d\n',number_bits);
@@ -64,10 +62,7 @@ for i=1:length(snr_dB)
     fprintf('BER = %12.8f\n',BER(i));
 end
 
-figure(1);
-semilogy(snr_dB,BER,'r-');
-axis([2 16 10^-5 1]);
-legend('16-QAM over AWGN (soft-decision)');
-xlabel('EbN0 - dB');
-ylabel ('BER');
-grid on;
+fprintf('\n\n');
+plotHandle=semilogy(snr_dB,BER,'g-o');
+set(plotHandle,'LineWidth',1.5);
+hold on;
