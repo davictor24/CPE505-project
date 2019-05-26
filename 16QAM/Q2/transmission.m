@@ -27,13 +27,9 @@ function [r1,r2,h1,h2]=transmission(length_frame,signal,bit,snr,coded)
         noise=sd*randn(1)+1i*sd*randn(1);
         
         % Generation of the fading samples h1 and h2
-        % For Rayleigh fading channels
-        noise1=sqrt(0.5)*randn(1);
-        noise2=sqrt(0.5)*randn(1);
-        h1(ii)=sqrt(noise1^2 + noise2^2);
-        noise1=sqrt(0.5)*randn(1);
-        noise2=sqrt(0.5)*randn(1);
-        h2(ii)=sqrt(noise1^2 + noise2^2);
+        % For AWGN channels
+        h1(ii)=1;
+        h2(ii)=1;
 
         % Expression of the received signal as a function of the transmitted signal
         r1(ii)=h1(ii)*real(transmitted) + real(noise);

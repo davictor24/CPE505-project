@@ -7,13 +7,14 @@ snr_dB=2:12;
 
 % Number of information bits per frame
 length_frame=3000;
+
 % Number of frames
 number_frames=1000;
 
 % Total number of information bits
 number_bits=length_frame*number_frames;
 
-fprintf(' BER performance of uncoded 8PSK over AWGN\n');
+fprintf(' BER performance of uncoded 8PSK over AWGN (hard-decision)\n');
 fprintf(' Number of bits per frame = %d\n',length_frame);
 fprintf(' Number of frames = %d\n',number_frames);
 fprintf(' Number of info bits = %d\n',number_bits);

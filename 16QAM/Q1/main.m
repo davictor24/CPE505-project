@@ -3,18 +3,16 @@
 % Range of SNR to be tested, (snr is the SNR per info bit (Eb/N0) expressed in dB)
 snr_dB=2:12;
 
-% number of soft decision bits
-nsdec = 10; 
-
 % Number of information bits per frame
 length_frame=3000;
+
 % Number of frames
 number_frames=1000;
 
 % Total number of information bits
 number_bits=length_frame*number_frames;
 
-fprintf(' BER performance of coded 16QAM over AWGN\n');
+fprintf(' BER performance of coded 16QAM over AWGN (hard-decision)\n');
 fprintf(' Number of bits per frame = %d\n',length_frame);
 fprintf(' Number of frames = %d\n',number_frames);
 fprintf(' Number of info bits = %d\n',number_bits);
@@ -45,11 +43,11 @@ for i=1:length(snr_dB)
         % Mapping and transmission through the AWGN or Rayleigh fading channel
         [r1,r2,h1,h2] = transmission(length_frame,signal,bit,snr,coded);
 
-        % Demapping
-        demod = demodulation(length_frame,signal,bit,snr,nsdec,r1,r2,h1,h2);
+        % Decision block
+        demod = demodulation(length_frame,signal,bit,r1,r2,h1,h2);
         
-        % Viterbi decoding
-        decoded = vitdec(demod, t, 100, 'trunc', 'soft', nsdec); 
+        % Depuncturing and Viterbi decoding
+        decoded = vitdec(demod, t, 100, 'trunc', 'hard', [1 1 0]); 
 
         % Error count
         [number_errors(frame),ratio] = biterr(msg,decoded);
@@ -63,6 +61,6 @@ for i=1:length(snr_dB)
 end
 
 fprintf('\n\n');
-plotHandle=semilogy(snr_dB,BER,'g-o');
+plotHandle=semilogy(snr_dB,BER,'r-h');
 set(plotHandle,'LineWidth',1.5);
 hold on;

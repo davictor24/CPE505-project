@@ -8,13 +8,14 @@ nsdec = 10;
 
 % Number of information bits per frame
 length_frame=3000;
+
 % Number of frames
 number_frames=1000;
 
 % Total number of information bits
 number_bits=length_frame*number_frames;
 
-fprintf(' BER performance of coded 16QAM over Rayleigh fading\n');
+fprintf(' BER performance of coded 16QAM over AWGN (soft-decision)\n');
 fprintf(' Number of bits per frame = %d\n',length_frame);
 fprintf(' Number of frames = %d\n',number_frames);
 fprintf(' Number of info bits = %d\n',number_bits);
@@ -63,6 +64,6 @@ for i=1:length(snr_dB)
 end
 
 fprintf('\n\n');
-plotHandle=semilogy(snr_dB,BER,'r-h');
+plotHandle=semilogy(snr_dB,BER,'g-o');
 set(plotHandle,'LineWidth',1.5);
 hold on;
